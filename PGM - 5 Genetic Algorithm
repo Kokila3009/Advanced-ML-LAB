@@ -1,0 +1,42 @@
+import random
+
+# Function we want to optimize 
+def quadratic_function(x):
+    return (x - 5)**2
+# Genetic algorithm parameters
+POPULATION_SIZE = 100
+NUM_GENERATIONS = 100
+MUTATION_RATE = 0.1
+# Create initial population
+population = [] 
+for _ in range(POPULATION_SIZE):
+    chromosome = [random.uniform(-10, 10)]
+    population.append(chromosome)
+
+# Evolution through generations
+for g in range(NUM_GENERATIONS):
+    
+    # Calculate fitness 
+    fitnesses = [quadratic_function(chromosome[0]) for chromosome in population]
+    
+    # Select parents 
+    parents = random.choices(population, weights=fitnesses, k=POPULATION_SIZE)
+
+    # Create next generation 
+    next_gen = []
+    for p1, p2 in zip(parents[::2], parents[1::2]):
+        
+        # Crossover 
+        child = [p1[0] if random.random() < 0.5 else p2[0]]
+        
+        # Mutation
+        if random.random() < MUTATION_RATE:
+            child = [random.uniform(-10, 10)]
+            
+        next_gen.append(child) 
+    # Replace population 
+    population = next_gen
+    
+# Find best solution    
+best = min(population, key=lambda x: quadratic_function(x[0]))
+print("Best solution: x=%s, f(x)=%s" % (best, quadratic_function(best[0])))
