@@ -1,0 +1,29 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def local_regression(x0, X, Y, tau):
+    x0 = [1, x0]   
+    X = [[1, i] for i in X]
+    X = np.asarray(X)
+    xw = (X.T) * np.exp(np.sum((X - x0) ** 2, axis=1) / (-2 * tau))
+    beta = np.linalg.pinv(xw @ X) @ xw @ Y @ x0  
+    return beta    
+
+def draw(tau):
+    prediction = [local_regression(x0, X, Y, tau) for x0 in domain]
+    plt.plot(X, Y, 'o', color='black')
+    plt.plot(domain, prediction, color='red')
+    plt.show()
+
+# Load data from a file
+loaded_data = np.loadtxt(' program3.csv’, delimiter=',')
+
+# Separate X and Y values
+X = loaded_data[:, 0]
+Y = loaded_data[:, 1]
+# Define the domain before using it
+domain = np.linspace(min(X), max(X), num=1000)
+draw(10)
+draw(0.1)
+draw(0.01)
+draw(0.001)
